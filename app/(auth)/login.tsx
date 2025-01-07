@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState, Pressable, Text } from 'react-native'
 import { supabase } from '~/utils/supabase'
 import { Button, TextInput } from 'react-native'
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -30,6 +30,7 @@ export default function Auth() {
 
     if (error) Alert.alert(error.message)
     setLoading(false)
+    router.push('/')
   }
 
   async function signUpWithEmail() {
