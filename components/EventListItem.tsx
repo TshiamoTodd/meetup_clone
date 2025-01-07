@@ -1,6 +1,7 @@
 import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Feather } from '@expo/vector-icons'
+import dayjs from 'dayjs'
 
 interface EventProps {
     id: string;
@@ -14,11 +15,11 @@ interface EventProps {
 
 export default function EventListItem({event} : {event: EventProps}) {
     return (
-        <View className='p-3 gap-3'>
+        <View className='m-3 pb-3 gap-3 border-b border-gray-400'>
             <View className='flex-row '>
             <View className='flex-1 gap-1 pr-3'>
                 <Text className='text-lg font-semibold uppercase text-amber-800'> 
-                    Wed 13, · 19:30 CAT
+                    {dayjs(event.datetime).format('ddd, D MMM')}, · {dayjs(event.datetime).format('h:mm A')}
                 </Text>
                 <Text numberOfLines={2} className='text-xl font-bold'>
                     {event.title}
@@ -37,9 +38,9 @@ export default function EventListItem({event} : {event: EventProps}) {
 
             {/* Footer */}
             <View className='flex flex-row gap-3'>
-            <Text className='text-gray-700 mr-auto'>16 going</Text>
-            <Feather name="share" size={20} color="gray" />
-            <Feather name="bookmark" size={20} color="gray" />
+                <Text className='text-gray-700 mr-auto'>16 going</Text>
+                <Feather name="share" size={20} color="gray" />
+                <Feather name="bookmark" size={20} color="gray" />
             </View>
         </View>
     )

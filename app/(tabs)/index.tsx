@@ -17,15 +17,6 @@ export default function Events() {
         keyExtractor={(item) => item.id}
         className='bg-gray-100'
       />
-      {/* <EventListItem
-        event={events[0]}
-      />
-      <EventListItem
-        event={events[1]}
-      />
-      <EventListItem
-        event={events[2]}
-      /> */}
       
     </>
   );
