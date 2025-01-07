@@ -38,8 +38,8 @@ export default function EventListItem({event} : {event: EventProps}) {
             {/* Footer */}
             <View className='flex flex-row gap-3'>
             <Text className='text-gray-700 mr-auto'>16 going</Text>
-            <Feather name="share" size={24} color="gray" />
-            <Feather name="bookmark" size={24} color="gray" />
+            <Feather name="share" size={20} color="gray" />
+            <Feather name="bookmark" size={20} color="gray" />
             </View>
         </View>
     )
