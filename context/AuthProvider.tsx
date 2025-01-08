@@ -3,7 +3,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { supabase } from "~/utils/supabase";
 
-const AuthContext = createContext({});
+const AuthContext = createContext<{
+    session: Session | null;
+    user: Session['user'] | null;
+    isAuthenticated: boolean;
+}>({
+    session: null,
+    user: null,
+    isAuthenticated: false
+});
 
 export default function AuthProvider({children}: {children: React.ReactNode}) {
     const [session, setSession] = useState<Session | null>(null)
@@ -24,7 +32,7 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     if (!isReady) return <ActivityIndicator/>
     
     return (
-        <AuthContext.Provider value={{session, user: session?.user, isAuthenticated: !!session?.user}}>
+        <AuthContext.Provider value={{session, user: session?.user ?? null, isAuthenticated: !!session?.user}}>
         {children}
         </AuthContext.Provider>
     );

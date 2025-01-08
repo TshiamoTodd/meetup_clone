@@ -91,7 +91,7 @@ export default function Home() {
       <Stack.Screen options={{ title: 'Profile' }} />
       <TextInput
         editable={false}
-        value={session.user?.email}
+        value={session!.user?.email}
         placeholder="email"
         autoCapitalize={'none'}
         className='border p-3 border-gray-300 rounded-md text-gray-500'
