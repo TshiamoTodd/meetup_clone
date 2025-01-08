@@ -9,7 +9,7 @@ const AuthLayout = ({}) => {
     if (isAuthenticated) {
         return <Redirect href={'/'}/>
     }
-    
+
     return (
         <Stack/>
     )
