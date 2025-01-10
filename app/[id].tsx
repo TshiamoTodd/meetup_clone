@@ -4,19 +4,23 @@ import { useLocalSearchParams, Stack } from 'expo-router'
 import events from '~/assets/events.json'
 import dayjs from 'dayjs'
 import { supabase } from '~/utils/supabase'
+import { useAuth } from '~/context/AuthProvider'
+
+interface Event {
+  id: string;
+  image_uri: string;
+  title: string;
+  date: string;
+  description: string;
+  location: string;
+}
 
 const EventPage = () => {
   const {id} = useLocalSearchParams()
-  const [loading, setLoading] = useState(false)
-  interface Event {
-    id: string;
-    image_uri: string;
-    title: string;
-    date: string;
-    description: string;
-    location: string;
-  }
+  const {user} = useAuth()
 
+  const [loading, setLoading] = useState(false)
+  const [attendance, setAttendance] = useState(null)
   const [event, setEvent] = useState<Event | null>(null);
 
   const fetchEvent = async () => {
@@ -28,6 +32,14 @@ const EventPage = () => {
         .single()
 
         setEvent(data)
+
+        const {data: attendanceData, error: attendanceError} = await supabase.from('attendance')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('event_id', id)
+        .single()
+
+        setAttendance(attendanceData)
       
       console.log(data)
     } catch (error) {
@@ -40,6 +52,21 @@ const EventPage = () => {
   useEffect(() => {
     fetchEvent()
   }, [id])
+
+  const joinEvent = async () => {
+    try {
+      const {data, error} = await supabase.from('attendance').insert({
+        event_id: event?.id,
+        user_id: user?.id
+      })
+      .select()
+      .single()
+
+      setAttendance(data)
+    } catch (error) {
+      Alert.alert(error as string)
+    }
+  }
 
 
   if(loading) {
@@ -74,9 +101,18 @@ const EventPage = () => {
       <View className='absolute bottom-0 left-0 right-0 p-5 pb-10 border-t border-gray-400 flex-row justify-between items-center'>
         <Text className='font-semibold text-xl'>Free</Text>
 
-        <Pressable className='bg-red-400 p-5 px-8 rounded-lg'>
-          <Text className='text-lg font-bold text-white'>Join and RSVP</Text>
-        </Pressable>
+        {attendance 
+            ? (
+                <Text className='text-green-500 font-bold'>
+                  You are attending
+                </Text> 
+            )
+          : (
+                <Pressable className='bg-red-400 p-5 px-8 rounded-lg' onPress={joinEvent}>
+                  <Text className='text-lg font-bold text-white'>Join and RSVP</Text>
+                </Pressable>
+            )
+          }
       </View>
     </View>
   )
