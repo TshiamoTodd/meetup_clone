@@ -20,11 +20,12 @@ AppState.addEventListener('change', (state) => {
 export default function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loadingSignUp, setLoadingSignUp] = useState(false)
+  const [loadingSignIn, setLoadingSignIn] = useState(false)
 
   async function signInWithEmail() {
     try {
-      setLoading(true)
+      setLoadingSignIn(true)
       const { error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
@@ -32,7 +33,7 @@ export default function Auth() {
 
       if (error) Alert.alert(error.message)
 
-      setLoading(false)
+      setLoadingSignIn(false)
       router.push('/')
     } catch (error) {
       Alert.alert(error as string)
@@ -41,7 +42,7 @@ export default function Auth() {
 
   async function signUpWithEmail() {
     try {
-      setLoading(true)
+      setLoadingSignUp(true)
       const {
         data: { session },
         error,
@@ -52,7 +53,7 @@ export default function Auth() {
 
       if (error) Alert.alert(error.message)
       if (!session) Alert.alert('Please check your inbox for email verification!')
-      setLoading(false)
+        setLoadingSignUp(false)
     } catch (error) {
       Alert.alert(error as string)
     }
@@ -82,9 +83,9 @@ export default function Auth() {
           <Pressable 
               className='rounded-md border border-red-500 p-3 px-8 flex-1 items-center justify-center'
               onPress={() => signInWithEmail()}
-              disabled={loading}
+              disabled={loadingSignIn}
           >
-              {loading 
+              {loadingSignIn 
                 ? <Feather className='animate-spin' name="loader" size={20} color="red" /> 
                 : <Text className='text-lg font-bold text-red-500'>Sign In</Text>
               }
@@ -92,11 +93,11 @@ export default function Auth() {
           <Pressable 
               className='rounded-md bg-red-500 p-3 px-8 flex-1 items-center justify-center'
               onPress={() => signUpWithEmail()}
-              disabled={loading}
+              disabled={loadingSignUp}
           >
-              {loading 
+              {loadingSignUp 
                 ? <Feather className='animate-spin' name="loader" size={20} color="white" /> 
-                : <Text className='text-lg font-bold text-white'>Sign In</Text>
+                : <Text className='text-lg font-bold text-white'>Sign Up</Text>
               }
           </Pressable>
       </View>
