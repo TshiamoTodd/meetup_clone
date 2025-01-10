@@ -1,6 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { supabase } from "~/utils/supabase";
 
 const AuthContext = createContext<{
@@ -29,7 +29,15 @@ export default function AuthProvider({children}: {children: React.ReactNode}) {
     }, [])
 
 
-    if (!isReady) return <ActivityIndicator/>
+    if (!isReady) {
+        return (
+            <>
+                <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size='large' color='gray' />
+                </View>
+            </>
+        )
+    }
     
     return (
         <AuthContext.Provider value={{session, user: session?.user ?? null, isAuthenticated: !!session?.user}}>

@@ -8,9 +8,9 @@ interface EventProps {
     id: string;
     title: string;
     description: string;
-    datetime: string;
+    date: string;
     location: string;
-    image: string;
+    image_uri: string;
 }
 
 
@@ -21,19 +21,19 @@ export default function EventListItem({event} : {event: EventProps}) {
                 <View className='flex-row '>
                 <View className='flex-1 gap-1 pr-3'>
                     <Text className='text-lg font-semibold uppercase text-amber-800'> 
-                        {dayjs(event.datetime).format('ddd, D MMM')}, · {dayjs(event.datetime).format('h:mm A')}
+                        {dayjs(event.date).format('ddd, D MMM')}, · {dayjs(event.date).format('h:mm A')}
                     </Text>
                     <Text numberOfLines={2} className='text-xl font-bold'>
                         {event.title}
                     </Text>
-                    <Text className='text-gray-700'>
+                    <Text className='text-gray-700 mt-2'>
                         {event.location}
                     </Text>
                 </View>
 
                 {/* Image Here */}
                 <Image
-                    source={{uri: event.image}}
+                    source={{uri: event.image_uri}}
                     className='w-2/5 aspect-video rounded-md'
                 />
                 </View>

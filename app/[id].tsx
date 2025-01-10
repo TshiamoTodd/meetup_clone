@@ -1,33 +1,73 @@
-import { View, Text, Image, Pressable } from 'react-native'
-import React from 'react'
+import { View, Text, Image, Pressable, Alert, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, Stack } from 'expo-router'
 import events from '~/assets/events.json'
 import dayjs from 'dayjs'
+import { supabase } from '~/utils/supabase'
 
 const EventPage = () => {
   const {id} = useLocalSearchParams()
+  const [loading, setLoading] = useState(false)
+  interface Event {
+    id: string;
+    image_uri: string;
+    title: string;
+    date: string;
+    description: string;
+    location: string;
+  }
 
-  const event = events.find(event => event.id === id)
+  const [event, setEvent] = useState<Event | null>(null);
 
-  if(!event) {
-    return <Text>Event not found</Text>
+  const fetchEvent = async () => {
+    try {
+      setLoading(true)
+      const {data, error} = await supabase.from('event')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+        setEvent(data)
+      
+      console.log(data)
+    } catch (error) {
+      Alert.alert(error as string)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchEvent()
+  }, [id])
+
+
+  if(loading) {
+    return (
+      <View className='flex-1 items-center justify-center'>
+        <ActivityIndicator size='large' color='gray' />
+      </View>
+    )
   }
 
   return (
     <View className='p-3 bg-gray-100 flex-1 gap-3'>
       <Stack.Screen options={{title: 'Event', headerTintColor: 'black'}} />
       <Image
-          source={{uri: event.image}}
+          source={{uri: event?.image_uri}}
           className='w-full aspect-video rounded-xl'
       />
       <Text numberOfLines={2} className='text-3xl font-bold'>
-          {event.title}
+          {event?.title}
       </Text>
       <Text className='text-lg font-semibold uppercase text-amber-800'> 
-          {dayjs(event.datetime).format('ddd, D MMM')}, · {dayjs(event.datetime).format('h:mm A')}
+          {dayjs(event?.date).format('ddd, D MMM')}, · {dayjs(event?.date).format('h:mm A')}
       </Text>
       <Text numberOfLines={2} className='text-lg'>
-          {event.description}
+          {event?.description}
+      </Text>
+      <Text numberOfLines={2} className='text-lg'>
+          {event?.location}
       </Text>
 
       {/* Footer */}

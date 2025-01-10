@@ -3,6 +3,7 @@ import { Alert, StyleSheet, View, AppState, Pressable, Text } from 'react-native
 import { supabase } from '~/utils/supabase'
 import { Button, TextInput } from 'react-native'
 import { router, Stack } from 'expo-router'
+import { Feather } from '@expo/vector-icons'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -22,31 +23,42 @@ export default function Auth() {
   const [loading, setLoading] = useState(false)
 
   async function signInWithEmail() {
-    setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
+    try {
+      setLoading(true)
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
 
-    if (error) Alert.alert(error.message)
-    setLoading(false)
-    router.push('/')
+      if (error) Alert.alert(error.message)
+
+      setLoading(false)
+      router.push('/')
+    } catch (error) {
+      Alert.alert(error as string)
+    }
   }
 
   async function signUpWithEmail() {
-    setLoading(true)
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
+    try {
+      setLoading(true)
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      })
 
-    if (error) Alert.alert(error.message)
-    if (!session) Alert.alert('Please check your inbox for email verification!')
-    setLoading(false)
+      if (error) Alert.alert(error.message)
+      if (!session) Alert.alert('Please check your inbox for email verification!')
+      setLoading(false)
+    } catch (error) {
+      Alert.alert(error as string)
+    }
   }
+
+
 
   return (
     <View className='p-5 pt-10 bg-gray-100 flex-1 gap-3'>
@@ -72,14 +84,20 @@ export default function Auth() {
               onPress={() => signInWithEmail()}
               disabled={loading}
           >
-              <Text className='text-lg font-bold text-red-500'>Sign In</Text>
+              {loading 
+                ? <Feather className='animate-spin' name="loader" size={20} color="red" /> 
+                : <Text className='text-lg font-bold text-red-500'>Sign In</Text>
+              }
           </Pressable>
           <Pressable 
               className='rounded-md bg-red-500 p-3 px-8 flex-1 items-center justify-center'
               onPress={() => signUpWithEmail()}
               disabled={loading}
           >
-              <Text className='text-lg font-bold text-white'>Sign Up</Text>
+              {loading 
+                ? <Feather className='animate-spin' name="loader" size={20} color="white" /> 
+                : <Text className='text-lg font-bold text-white'>Sign In</Text>
+              }
           </Pressable>
       </View>
     </View>

@@ -125,7 +125,7 @@ export default function Home() {
           disabled={loading}
       >
           {loading 
-            ? <Feather className='animate-spin' name="loader" size={20} color="black" /> 
+            ? <Feather className='animate-spin' name="loader" size={20} color="red" /> 
             : <Text className='text-lg font-bold text-red-500'>Save</Text>
           }
       </Pressable>
